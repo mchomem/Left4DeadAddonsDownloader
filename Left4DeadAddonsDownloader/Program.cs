@@ -73,13 +73,10 @@ namespace Left4DeadAddonsDownloader
         {
             ConsoleMessage.Write("Verificando diretório addons do Left 4 Dead. Aguarde", TypeMessage.INFORMATION);
 
-            foreach (DriveInfo drive in DriveInfo.GetDrives())
-            {
-                left4DeadValidAddons = $"{drive.Name}{appSettings.Left4DeadAddonsFolder}";
+            left4DeadValidAddons = appSettings.Left4DeadAddonsFolder;
 
-                if (Directory.Exists(left4DeadValidAddons))
-                    return true;
-            }
+            if (Directory.Exists(left4DeadValidAddons))
+                return true;
 
             left4DeadValidAddons = string.Empty;
             return false;
