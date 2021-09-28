@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Left4DeadAddonsDownloader", "Left4DeadAddonsDownloader\Left4DeadAddonsDownloader.csproj", "{21DBA2C9-C0EA-4E6E-B20E-A5A7D597E412}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21DBA2C9-C0EA-4E6E-B20E-A5A7D597E412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21DBA2C9-C0EA-4E6E-B20E-A5A7D597E412}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21DBA2C9-C0EA-4E6E-B20E-A5A7D597E412}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21DBA2C9-C0EA-4E6E-B20E-A5A7D597E412}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C94CBDBF-7596-4E65-8743-BE101BE9C716}
+	EndGlobalSection
+EndGlobal
