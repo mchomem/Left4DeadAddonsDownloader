@@ -25,6 +25,7 @@ namespace Left4DeadAddonsDownloader
         private static string left4DeadValidAddons;
         private static string localAppFolder;
         private static string pathToDownload;
+        private static string userAgent;
 
         #endregion
 
@@ -46,7 +47,7 @@ namespace Left4DeadAddonsDownloader
 
             DownloadVpkFiles(GetUrlListsToDownload());
             ExtractFilesToAddonsFolder();
-            HoldenOnlyVPK();
+            HoldenOnlyVPKFiles();
             Exit();
         }
 
@@ -58,6 +59,9 @@ namespace Left4DeadAddonsDownloader
         {
             localAppFolder = AppDomain.CurrentDomain.BaseDirectory;
             pathToDownload = $"{localAppFolder}{appSettings.TemporaryDownloadFolder}";
+
+            // TODO: adicionar mais de um sistema operacional como o Windows 8 e Windows 7
+            userAgent = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36";
         }
 
         private static void Exit()
@@ -124,12 +128,12 @@ namespace Left4DeadAddonsDownloader
             int fileSize = 0;
 
             WebRequest req = WebRequest.Create(url);
-            req.Headers.Add("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36");
+            req.Headers.Add(userAgent);
             req.Method = "HEAD";
 
             using (WebResponse resp = req.GetResponse())
             {
-                resp.Headers.Add("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36");
+                resp.Headers.Add(userAgent);
 
                 if (!string.IsNullOrEmpty(resp.Headers["Content-Disposition"]))
                     file.Name = resp.Headers["Content-Disposition"].Substring(resp.Headers["Content-Disposition"].IndexOf("filename=") + 9).Replace("\"", "");
@@ -171,7 +175,7 @@ namespace Left4DeadAddonsDownloader
                         string url = urls[i];
                         string idMap = string.Empty;
 
-                        client.Headers.Add("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36");
+                        client.Headers.Add(userAgent);
 
                         if (credentials.Enabled)
                             client.Credentials = new NetworkCredential(credentials.User, credentials.Password);
@@ -238,10 +242,11 @@ namespace Left4DeadAddonsDownloader
             }
         }
 
-        private static void HoldenOnlyVPK()
+        private static void HoldenOnlyVPKFiles()
         {
+            ConsoleMessage.Write("Limpando diretório addons", TypeMessage.INFORMATION);
             DirectoryInfo di = new DirectoryInfo(left4DeadValidAddons);
-            FileInfo[] files = di.GetFiles("*.txt").Where(p => p.Extension == ".txt").ToArray();
+            FileInfo[] files = di.GetFiles().Where(p => !p.Extension.Equals(".vpk")).ToArray();
 
             foreach (FileInfo file in files)
             {

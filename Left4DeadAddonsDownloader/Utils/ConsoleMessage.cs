@@ -11,11 +11,8 @@ namespace Left4DeadAddonsDownloader.Utils
         DEFAULT
     }
 
-
     public static class ConsoleMessage
     {
-
-
         public static void Write(string text, TypeMessage typeMessage = TypeMessage.DEFAULT, bool prefixLogTime = true, bool recordLog = true)
         {
             string logTime = $"[{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}]: ";
