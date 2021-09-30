@@ -59,9 +59,8 @@ namespace Left4DeadAddonsDownloader
         {
             localAppFolder = AppDomain.CurrentDomain.BaseDirectory;
             pathToDownload = $"{localAppFolder}{appSettings.TemporaryDownloadFolder}";
-
-            // TODO: adicionar mais de um sistema operacional como o Windows 8 e Windows 7
-            userAgent = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36";
+            string osVersion = DetectOperationSystem();
+            userAgent = $"User-Agent: Mozilla/5.0 (Windows NT { osVersion }; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36";
         }
 
         private static void Exit()
@@ -71,6 +70,13 @@ namespace Left4DeadAddonsDownloader
             Log.Add(string.Empty.PadLeft(150, '='));
             Thread.Sleep(new TimeSpan(0, value, 0));
             Environment.Exit(0);
+        }
+
+        private static string DetectOperationSystem()
+        {
+            OperatingSystem os = Environment.OSVersion;
+            ConsoleMessage.Write($"Sistema operacional detectado { os.VersionString }", TypeMessage.INFORMATION);
+            return os.Version.ToString(2);
         }
 
         private static bool CheckLeft4DeadAddonsFolder()
@@ -246,6 +252,8 @@ namespace Left4DeadAddonsDownloader
         {
             ConsoleMessage.Write("Limpando diretório addons", TypeMessage.INFORMATION);
             DirectoryInfo di = new DirectoryInfo(left4DeadValidAddons);
+            
+            // Considera somente os arquivos que não sejam da extensão VPK (Valve Pak).
             FileInfo[] files = di.GetFiles().Where(p => !p.Extension.Equals(".vpk")).ToArray();
 
             foreach (FileInfo file in files)
