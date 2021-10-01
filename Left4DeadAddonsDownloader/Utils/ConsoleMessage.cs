@@ -35,7 +35,7 @@ namespace Left4DeadAddonsDownloader.Utils
                     break;
 
                 case TypeMessage.ERROR:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.Red;
                     break;
 
                 default:

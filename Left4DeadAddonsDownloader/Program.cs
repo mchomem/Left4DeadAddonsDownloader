@@ -3,6 +3,7 @@ using Left4DeadAddonsDownloader.Models.DataBase;
 using Left4DeadAddonsDownloader.Models.Entities;
 using Left4DeadAddonsDownloader.Utils;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -92,9 +93,9 @@ namespace Left4DeadAddonsDownloader
             return false;
         }
 
-        private static List<string> GetUrlListsToDownload()
+        private static List<FileToDownload> GetUrlListsToDownload()
         {
-            List<string> urlAddons = new List<string>();
+            List<FileToDownload> filesToDonwload = new List<FileToDownload>();
 
             try
             {
@@ -115,10 +116,9 @@ namespace Left4DeadAddonsDownloader
                         content = sw.ReadToEnd();
                 }
 
-                urlAddons = content.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
-                urlAddons = urlAddons.Where(x => !x.Contains(";")).ToList(); // Exclui as linhas comentadas com ";".
+                filesToDonwload = JsonConvert.DeserializeObject<JsonModel>(content).FilesToDownload;
                 ConsoleMessage.Write("Listagem de url's pronta", TypeMessage.INFORMATION);
-                return urlAddons;
+                return filesToDonwload;
             }
             catch (Exception e)
             {
@@ -160,17 +160,17 @@ namespace Left4DeadAddonsDownloader
             return false;
         }
 
-        private static void DownloadVpkFiles(List<string> urls)
+        private static void DownloadVpkFiles(List<FileToDownload> filesToDownlaoad)
         {
             CreateTempFolder();
 
             using (WebClient client = new WebClient())
             {
-                for (int i = 0; i < urls.Count; i++)
+                for (int i = 0; i < filesToDownlaoad.Count; i++)
                 {
                     FileDownloaded file = new FileDownloaded();
 
-                    if (FileAlreadyDownloaded(urls[i], out file))
+                    if (FileAlreadyDownloaded(filesToDownlaoad[i].Url, out file))
                     {
                         ConsoleMessage.Write($"Ignorando arquivo { file.Name } já baixado anteriormente", TypeMessage.WARNING);
                         continue;
@@ -178,7 +178,7 @@ namespace Left4DeadAddonsDownloader
 
                     try
                     {
-                        string url = urls[i];
+                        string url = filesToDownlaoad[i].Url;
                         string idMap = string.Empty;
 
                         client.Headers.Add(userAgent);
@@ -186,12 +186,11 @@ namespace Left4DeadAddonsDownloader
                         if (credentials.Enabled)
                             client.Credentials = new NetworkCredential(credentials.User, credentials.Password);
 
-                        if (url.Contains("gamemaps.com"))
-                            idMap = url.Split("/")[5]; // Obtém o ID do mapa na quinta posição do indice da url.
-
                         if (string.IsNullOrEmpty(file.Name))
                         {
-                            file.Name = idMap;
+                            if (url.Contains("gamemaps.com"))                            
+                                file.Name = url.Split("/")[5]; // Obtém o ID do mapa na quinta posição do indice da url.                            
+
                             client.DownloadFile(url, @$"{ pathToDownload }\{ file.Name }.zip");
                         }
                         else
@@ -252,7 +251,7 @@ namespace Left4DeadAddonsDownloader
         {
             ConsoleMessage.Write("Limpando diretório addons", TypeMessage.INFORMATION);
             DirectoryInfo di = new DirectoryInfo(left4DeadValidAddons);
-            
+
             // Considera somente os arquivos que não sejam da extensão VPK (Valve Pak).
             FileInfo[] files = di.GetFiles().Where(p => !p.Extension.Equals(".vpk")).ToArray();
 
