@@ -4,5 +4,6 @@
     {
         public string Name { get; set; }
         public int Size { get; set; }
+        public string UrlOrigin { get; set; }
     }
 }

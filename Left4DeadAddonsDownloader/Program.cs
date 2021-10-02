@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -16,9 +17,6 @@ namespace Left4DeadAddonsDownloader
 {
     class Program
     {
-        // Se a aplicação não funcionar deve ser instalado o runtime do dotnet core.
-        // https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-5.0.10-windows-x64-installer
-
         #region Feilds
 
         private static AppConfiguration appSettings;
@@ -49,6 +47,11 @@ namespace Left4DeadAddonsDownloader
             DownloadVpkFiles(GetUrlListsToDownload());
             ExtractFilesToAddonsFolder();
             HoldenOnlyVPKFiles();
+
+#if DEBUG
+            Process.Start("explorer.exe", appSettings.Left4DeadAddonsFolder);
+#endif
+
             Exit();
         }
 
@@ -117,7 +120,8 @@ namespace Left4DeadAddonsDownloader
                 }
 
                 filesToDonwload = JsonConvert.DeserializeObject<JsonModel>(content).FilesToDownload;
-                ConsoleMessage.Write("Listagem de url's pronta", TypeMessage.INFORMATION);
+                string plural = filesToDonwload.Count > 1 ? "s" : string.Empty;
+                ConsoleMessage.Write($"Listagem de url's pronta com { filesToDonwload.Count } mapa{ plural }", TypeMessage.INFORMATION);
                 return filesToDonwload;
             }
             catch (Exception e)
@@ -148,12 +152,11 @@ namespace Left4DeadAddonsDownloader
                     file.Name = resp.Headers["x-bz-file-name"].Split("/")[3];
 
                 file.Size = Convert.ToInt32(resp.Headers["Content-Length"]);
-
                 fileName = file.Name;
                 fileSize = file.Size;
 
-                // Verifica na lista se o arquivo já foi baixado e se por acaso o tamanho continua o mesmo em relação ao original baixado.
-                if (new Context().Select().Any(x => x.Name.Equals(fileName) && x.Size == fileSize))
+                // Verifica na lista se o arquivo já foi baixado considerando o nome, tamanho e url de origem.
+                if (new Context().Select().Any(x => x.Name.Equals(fileName) && x.Size == fileSize && x.UrlOrigin == url))
                     return true;
             }
 
@@ -170,15 +173,16 @@ namespace Left4DeadAddonsDownloader
                 {
                     FileDownloaded file = new FileDownloaded();
 
-                    if (FileAlreadyDownloaded(filesToDownlaoad[i].Url, out file))
+                    string url = filesToDownlaoad[i].Url;
+
+                    if (FileAlreadyDownloaded(url, out file))
                     {
                         ConsoleMessage.Write($"Ignorando arquivo { file.Name } já baixado anteriormente", TypeMessage.WARNING);
                         continue;
                     }
 
                     try
-                    {
-                        string url = filesToDownlaoad[i].Url;
+                    {                        
                         string idMap = string.Empty;
 
                         client.Headers.Add(userAgent);
@@ -196,7 +200,7 @@ namespace Left4DeadAddonsDownloader
                         else
                             client.DownloadFile(url, @$"{ pathToDownload }\{ file.Name }");
 
-                        new Context().Insert(new FileDownloaded() { Name = file.Name, Size = file.Size });
+                        new Context().Insert(new FileDownloaded() { Name = file.Name, Size = file.Size, UrlOrigin = url });
 
                         ConsoleMessage.Write($"Arquivo { file.Name } baixado de { url }", TypeMessage.SUCCESS);
                     }

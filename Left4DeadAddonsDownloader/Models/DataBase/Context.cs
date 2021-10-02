@@ -23,7 +23,7 @@ namespace Left4DeadAddonsDownloader.Models.DataBase
         {
             using (StreamWriter sw = new StreamWriter(path, true))
             {
-                sw.WriteLine($"{file.Name};{file.Size}");
+                sw.WriteLine($"{file.Name};{file.Size};{file.UrlOrigin}");
             }
         }
 
@@ -35,7 +35,7 @@ namespace Left4DeadAddonsDownloader.Models.DataBase
             {
                 using (StreamWriter sw = new StreamWriter(path))
                 {
-                    sw.WriteLine($"{item.Name};{item.Size}");
+                    sw.WriteLine($"{file.Name};{file.Size};{file.UrlOrigin}");
                 }
             }
         }
@@ -55,7 +55,8 @@ namespace Left4DeadAddonsDownloader.Models.DataBase
                     files.Add(new FileDownloaded()
                     {
                         Name = item.Split(';')[0],
-                        Size = Convert.ToInt32(item.Split(';')[1])
+                        Size = Convert.ToInt32(item.Split(';')[1]),
+                        UrlOrigin = item.Split(';')[2]
                     });
                 }
             }
