@@ -4,29 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Left4DeadAddonsDownloader.Models.DataBase
+namespace Left4DeadAddonsDownloader.Models.Repositories
 {
-    public class Context
+    public class FileDownloadedRepository : FileContext, IFileDownloadedRepository
     {
-        private string path = "./data.csv";
-
-        public Context()
-        {
-            if (!File.Exists(path))
-            {
-                StreamWriter sw = new StreamWriter(path);
-                sw.Close();
-            }
-        }
-
-        public void Insert(FileDownloaded file)
-        {
-            using (StreamWriter sw = new StreamWriter(path, true))
-            {
-                sw.WriteLine($"{file.Name};{file.Size};{file.UrlOrigin}");
-            }
-        }
-
         public void Delete(FileDownloaded file)
         {
             List<FileDownloaded> files = this.Select().Where(x => !x.Name.Equals(file.Name)).ToList();
@@ -34,10 +15,14 @@ namespace Left4DeadAddonsDownloader.Models.DataBase
             foreach (var item in files)
             {
                 using (StreamWriter sw = new StreamWriter(path))
-                {
                     sw.WriteLine($"{file.Name};{file.Size};{file.UrlOrigin}");
-                }
             }
+        }
+
+        public void Insert(FileDownloaded file)
+        {
+            using (StreamWriter sw = new StreamWriter(path, true))
+                sw.WriteLine($"{file.Name};{file.Size};{file.UrlOrigin}");
         }
 
         public List<FileDownloaded> Select()

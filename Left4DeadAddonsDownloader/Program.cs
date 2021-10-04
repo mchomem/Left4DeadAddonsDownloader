@@ -1,6 +1,6 @@
 ﻿using Left4DeadAddonsDownloader.Models;
-using Left4DeadAddonsDownloader.Models.DataBase;
 using Left4DeadAddonsDownloader.Models.Entities;
+using Left4DeadAddonsDownloader.Models.Repositories;
 using Left4DeadAddonsDownloader.Utils;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -156,7 +156,7 @@ namespace Left4DeadAddonsDownloader
                 fileSize = file.Size;
 
                 // Verifica na lista se o arquivo já foi baixado considerando o nome, tamanho e url de origem.
-                if (new Context().Select().Any(x => x.Name.Equals(fileName) && x.Size == fileSize && x.UrlOrigin == url))
+                if (new FileDownloadedRepository().Select().Any(x => x.Name.Equals(fileName) && x.Size == fileSize && x.UrlOrigin == url))
                     return true;
             }
 
@@ -200,7 +200,7 @@ namespace Left4DeadAddonsDownloader
                         else
                             client.DownloadFile(url, @$"{ pathToDownload }\{ file.Name }");
 
-                        new Context().Insert(new FileDownloaded() { Name = file.Name, Size = file.Size, UrlOrigin = url });
+                        new FileDownloadedRepository().Insert(new FileDownloaded() { Name = file.Name, Size = file.Size, UrlOrigin = url });
 
                         ConsoleMessage.Write($"Arquivo { file.Name } baixado de { url }", TypeMessage.SUCCESS);
                     }
