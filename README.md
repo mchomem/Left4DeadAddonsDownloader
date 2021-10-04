@@ -26,11 +26,15 @@ The json file format is this:
 }
 ```
 
-The tool is currently available on the website http://superexpertbrasil.servegame.com.
+The tool is currently available on the website [Super Expert Brasil](http://superexpertbrasil.servegame.com){:target="_blank"}. 
 
 ## Dependence
 
 "Left 4 Dead Addon Download" needs .NET 5.0 to work. This binary can be founded in https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-5.0.10-windows-x64-installer. Is already included on the installer.
+
+## Support
+
+Currently the tool can run on Windows 10 on 64 bit platform.
 
 ## License
 
