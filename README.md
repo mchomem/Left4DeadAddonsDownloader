@@ -26,7 +26,7 @@ The json file format is this:
 }
 ```
 
-The tool is currently available on the website [Super Expert Brasil](http://superexpertbrasil.servegame.com "title" target="_blank").
+The tool is currently available on the website [Super Expert Brasil](http://superexpertbrasil.servegame.com).
 
 ## Dependence
 
