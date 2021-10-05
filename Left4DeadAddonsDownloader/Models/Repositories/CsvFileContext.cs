@@ -2,11 +2,11 @@
 
 namespace Left4DeadAddonsDownloader.Models.Repositories
 {
-    public class FileContext
+    public class CsvFileContext
     {
         public const string path = "./data.csv";
 
-        public FileContext()
+        public CsvFileContext()
         {
             if (!File.Exists(path))
             {

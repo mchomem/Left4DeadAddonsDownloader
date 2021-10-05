@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Left4DeadAddonsDownloader.Models.Repositories
 {
-    public class FileDownloadedRepository : FileContext, IFileDownloadedRepository
+    public class FileDownloadedRepository : CsvFileContext, IFileDownloadedRepository
     {
         public void Delete(FileDownloaded file)
         {
