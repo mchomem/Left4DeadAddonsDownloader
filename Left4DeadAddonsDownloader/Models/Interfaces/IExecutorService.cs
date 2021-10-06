@@ -10,7 +10,7 @@ namespace Left4DeadAddonsDownloader.Models.Interfaces
         void InicializeProperties();
         void Exit();
         string DetectOperationSystem();
-        bool CheckLeft4DeadAddonsFolder();
+        void CheckLeft4DeadAddonsFolder();
         List<FileToDownload> GetUrlListsToDownload();
         bool FileAlreadyDownloaded(string url, out FileDownloaded file);
         void DownloadVpkFiles(List<FileToDownload> filesToDownlaoad);

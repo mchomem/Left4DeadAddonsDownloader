@@ -40,21 +40,13 @@ namespace Left4DeadAddonsDownloader.Services
 
             ReadAppSettings();
             InicializeProperties();
-
-            if (!CheckLeft4DeadAddonsFolder())
-            {
-                ConsoleMessage.Write("O local dos Addons não foi localizado na sua máquina. Verifique a sua instalação de Left 4 Dead", TypeMessage.WARNING);
-                Exit();
-            }
-
+            CheckLeft4DeadAddonsFolder();
             DownloadVpkFiles(GetUrlListsToDownload());
             ExtractFilesToAddonsFolder();
             HoldenOnlyVPKFiles();
-
 #if DEBUG
             OpenAddonsFolder();
 #endif
-
             Exit();
         }
 
@@ -89,17 +81,17 @@ namespace Left4DeadAddonsDownloader.Services
             return os.Version.ToString(2);
         }
 
-        public bool CheckLeft4DeadAddonsFolder()
+        public void CheckLeft4DeadAddonsFolder()
         {
             ConsoleMessage.Write("Verificando diretório addons do Left 4 Dead. Aguarde", TypeMessage.INFORMATION);
 
             left4DeadValidAddons = appSettings.Left4DeadAddonsFolder;
 
-            if (Directory.Exists(left4DeadValidAddons))
-                return true;
-
-            left4DeadValidAddons = string.Empty;
-            return false;
+            if (!Directory.Exists(left4DeadValidAddons))
+            {
+                ConsoleMessage.Write("O local dos Addons não foi localizado na sua máquina. Verifique a sua instalação de Left 4 Dead", TypeMessage.WARNING);
+                Exit();
+            }
         }
 
         public List<FileToDownload> GetUrlListsToDownload()
