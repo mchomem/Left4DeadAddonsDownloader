@@ -1,6 +1,5 @@
-﻿using Left4DeadAddonsDownloader.Models;
-using Left4DeadAddonsDownloader.Models.Entities;
-using Left4DeadAddonsDownloader.Models.Repositories;
+﻿using Left4DeadAddonsDownloader.Models.Entities;
+using Left4DeadAddonsDownloader.Models.Interfaces;
 using Left4DeadAddonsDownloader.Utils;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -13,9 +12,9 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 
-namespace Left4DeadAddonsDownloader
-{    
-    public class Executor
+namespace Left4DeadAddonsDownloader.Services
+{
+    public class ExecutorService : IExecutorService
     {
         #region Fields
 
@@ -25,8 +24,14 @@ namespace Left4DeadAddonsDownloader
         private string localAppFolder;
         private string pathToDownload;
         private string userAgent;
+        private readonly IFileDownloadedRepository _fileDownloadRepository;
 
         #endregion
+
+        public ExecutorService(IFileDownloadedRepository fileDownloadRepository)
+        {
+            _fileDownloadRepository = fileDownloadRepository;
+        }
 
         public void Start()
         {
@@ -55,12 +60,12 @@ namespace Left4DeadAddonsDownloader
 
         #region Methods
 
-        private void OpenAddonsFolder()
+        public void OpenAddonsFolder()
         {
             Process.Start("explorer.exe", appSettings.Left4DeadAddonsFolder);
         }
 
-        private void InicializeProperties()
+        public void InicializeProperties()
         {
             localAppFolder = AppDomain.CurrentDomain.BaseDirectory;
             pathToDownload = $"{localAppFolder}{appSettings.TemporaryDownloadFolder}";
@@ -68,7 +73,7 @@ namespace Left4DeadAddonsDownloader
             userAgent = $"User-Agent: Mozilla/5.0 (Windows NT { osVersion }; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36";
         }
 
-        private void Exit()
+        public void Exit()
         {
             int value = 1;
             ConsoleMessage.Write($"Encerrando aplicação em { value } minuto", TypeMessage.INFORMATION);
@@ -77,14 +82,14 @@ namespace Left4DeadAddonsDownloader
             Environment.Exit(0);
         }
 
-        private string DetectOperationSystem()
+        public string DetectOperationSystem()
         {
             OperatingSystem os = Environment.OSVersion;
             ConsoleMessage.Write($"Sistema operacional detectado { os.VersionString }", TypeMessage.INFORMATION);
             return os.Version.ToString(2);
         }
 
-        private bool CheckLeft4DeadAddonsFolder()
+        public bool CheckLeft4DeadAddonsFolder()
         {
             ConsoleMessage.Write("Verificando diretório addons do Left 4 Dead. Aguarde", TypeMessage.INFORMATION);
 
@@ -97,7 +102,7 @@ namespace Left4DeadAddonsDownloader
             return false;
         }
 
-        private List<FileToDownload> GetUrlListsToDownload()
+        public List<FileToDownload> GetUrlListsToDownload()
         {
             List<FileToDownload> filesToDonwload = new List<FileToDownload>();
 
@@ -132,7 +137,7 @@ namespace Left4DeadAddonsDownloader
             }
         }
 
-        private bool FileAlreadyDownloaded(string url, out FileDownloaded file)
+        public bool FileAlreadyDownloaded(string url, out FileDownloaded file)
         {
             file = new FileDownloaded();
             string fileName = string.Empty;
@@ -156,15 +161,14 @@ namespace Left4DeadAddonsDownloader
                 fileName = file.Name;
                 fileSize = file.Size;
 
-                // Verifica na lista se o arquivo já foi baixado considerando o nome, tamanho e url de origem.
-                if (new FileDownloadedRepository().Select().Any(x => x.Name.Equals(fileName) && x.Size == fileSize && x.UrlOrigin == url))
+                if (_fileDownloadRepository.Select().Any(x => x.Name.Equals(fileName) && x.Size == fileSize && x.UrlOrigin == url))
                     return true;
             }
 
             return false;
         }
 
-        private void DownloadVpkFiles(List<FileToDownload> filesToDownlaoad)
+        public void DownloadVpkFiles(List<FileToDownload> filesToDownlaoad)
         {
             CreateTempFolder();
 
@@ -201,8 +205,7 @@ namespace Left4DeadAddonsDownloader
                         else
                             client.DownloadFile(url, @$"{ pathToDownload }\{ file.Name }");
 
-                        new FileDownloadedRepository().Insert(new FileDownloaded() { Name = file.Name, Size = file.Size, UrlOrigin = url });
-
+                        _fileDownloadRepository.Insert(new FileDownloaded() { Name = file.Name, Size = file.Size, UrlOrigin = url });
                         ConsoleMessage.Write($"Arquivo { file.Name } baixado de { url }", TypeMessage.SUCCESS);
                     }
                     catch (Exception e)
@@ -213,7 +216,7 @@ namespace Left4DeadAddonsDownloader
             }
         }
 
-        private void ExtractFilesToAddonsFolder()
+        public void ExtractFilesToAddonsFolder()
         {
             try
             {
@@ -234,7 +237,7 @@ namespace Left4DeadAddonsDownloader
             }
         }
 
-        private void CreateTempFolder()
+        public void CreateTempFolder()
         {
             if (!Directory.Exists(pathToDownload))
             {
@@ -243,7 +246,7 @@ namespace Left4DeadAddonsDownloader
             }
         }
 
-        private void DeleteTempFolder()
+        public void DeleteTempFolder()
         {
             if (Directory.Exists(pathToDownload))
             {
@@ -252,7 +255,7 @@ namespace Left4DeadAddonsDownloader
             }
         }
 
-        private void HoldenOnlyVPKFiles()
+        public void HoldenOnlyVPKFiles()
         {
             ConsoleMessage.Write("Limpando diretório addons", TypeMessage.INFORMATION);
             DirectoryInfo di = new DirectoryInfo(left4DeadValidAddons);
@@ -274,7 +277,7 @@ namespace Left4DeadAddonsDownloader
             }
         }
 
-        private void ReadAppSettings()
+        public void ReadAppSettings()
         {
             try
             {

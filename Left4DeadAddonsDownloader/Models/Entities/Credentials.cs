@@ -1,4 +1,4 @@
-﻿namespace Left4DeadAddonsDownloader.Models
+﻿namespace Left4DeadAddonsDownloader.Models.Entities
 {
     public class Credentials
     {

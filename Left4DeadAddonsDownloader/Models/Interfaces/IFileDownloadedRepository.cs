@@ -1,7 +1,7 @@
 ﻿using Left4DeadAddonsDownloader.Models.Entities;
 using System.Collections.Generic;
 
-namespace Left4DeadAddonsDownloader.Models.Repositories
+namespace Left4DeadAddonsDownloader.Models.Interfaces
 {
     public interface IFileDownloadedRepository
     {

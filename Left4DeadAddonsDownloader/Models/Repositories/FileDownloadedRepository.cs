@@ -1,4 +1,5 @@
 ﻿using Left4DeadAddonsDownloader.Models.Entities;
+using Left4DeadAddonsDownloader.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
