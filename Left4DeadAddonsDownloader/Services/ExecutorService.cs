@@ -1,5 +1,6 @@
 ﻿using Left4DeadAddonsDownloader.Models.Entities;
 using Left4DeadAddonsDownloader.Models.Interfaces;
+using Left4DeadAddonsDownloader.Models.Repositories;
 using Left4DeadAddonsDownloader.Utils;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Left4DeadAddonsDownloader.Services
@@ -46,6 +48,7 @@ namespace Left4DeadAddonsDownloader.Services
             HoldenOnlyVPKFiles();
 #if DEBUG
             OpenAddonsFolder();
+            CsvFileContext.Destroy();
 #endif
             Exit();
         }
@@ -62,7 +65,13 @@ namespace Left4DeadAddonsDownloader.Services
             localAppFolder = AppDomain.CurrentDomain.BaseDirectory;
             pathToDownload = $"{localAppFolder}{appSettings.TemporaryDownloadFolder}";
             string osVersion = DetectOperationSystem();
-            userAgent = $"User-Agent: Mozilla/5.0 (Windows NT { osVersion }; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36";
+
+            // userAgent = "User-Agent: Left4DeadAddonsDownloader/1.0.0-alpha (+https://github.com/mchomem/Left4DeadAddonsDownloader)";
+            userAgent = "User-Agent: Mozilla/5.0 (compatible; Left4DeadAddonsDownloader/1.0.0-alpha; +https://github.com/mchomem/Left4DeadAddonsDownloader)";
+
+#if DEBUG
+            ConsoleMessage.Write(userAgent, TypeMessage.INFORMATION);
+#endif
         }
 
         public void Exit()
@@ -169,19 +178,17 @@ namespace Left4DeadAddonsDownloader.Services
                 for (int i = 0; i < filesToDownlaoad.Count; i++)
                 {
                     FileDownloaded file = new FileDownloaded();
-
                     string url = filesToDownlaoad[i].Url;
-
-                    if (FileAlreadyDownloaded(url, out file))
-                    {
-                        ConsoleMessage.Write($"Ignorando arquivo { file.Name } já baixado anteriormente", TypeMessage.WARNING);
-                        continue;
-                    }
 
                     try
                     {
-                        string idMap = string.Empty;
+                        if (FileAlreadyDownloaded(url, out file))
+                        {
+                            ConsoleMessage.Write($"Ignorando arquivo { file.Name } já baixado anteriormente", TypeMessage.WARNING);
+                            continue;
+                        }
 
+                        string idMap = string.Empty;
                         client.Headers.Add(userAgent);
 
                         if (credentials.Enabled)
@@ -199,10 +206,25 @@ namespace Left4DeadAddonsDownloader.Services
 
                         _fileDownloadRepository.Insert(new FileDownloaded() { Name = file.Name, Size = file.Size, UrlOrigin = url });
                         ConsoleMessage.Write($"Arquivo { file.Name } baixado de { url }", TypeMessage.SUCCESS);
+
+#if DEBUG
+                        // TODO: remover futuramente.
+                        // Para executar uma única vez em modo debug.
+                        break;
+#endif
                     }
                     catch (Exception e)
                     {
-                        ConsoleMessage.Write($"Falha: { e.Message }", TypeMessage.ERROR);
+                        string formattedStackStrace = string.Empty;
+
+                        if (!string.IsNullOrEmpty(e.StackTrace))
+                        {
+                            Regex regex = new Regex(Regex.Escape("at"));
+                            formattedStackStrace = regex.Replace(e.StackTrace, "\r\n   at", 1);
+                        }
+
+                        ConsoleMessage.Write($"Falha: { e.Message } StackTrace: { formattedStackStrace }", TypeMessage.ERROR);
+                        Exit();
                     }
                 }
             }

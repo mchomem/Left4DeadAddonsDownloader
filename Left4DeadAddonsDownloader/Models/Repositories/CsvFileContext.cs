@@ -13,6 +13,12 @@ namespace Left4DeadAddonsDownloader.Models.Repositories
                 StreamWriter sw = new StreamWriter(path);
                 sw.Close();
             }
-        }       
+        }
+
+        public static void Destroy()
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
     }
 }
