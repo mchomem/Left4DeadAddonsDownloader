@@ -1,6 +1,5 @@
 ﻿using Left4DeadAddonsDownloader.Models.Entities;
 using Left4DeadAddonsDownloader.Models.Interfaces;
-using Left4DeadAddonsDownloader.Models.Repositories;
 using Left4DeadAddonsDownloader.Utils;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -48,7 +47,6 @@ namespace Left4DeadAddonsDownloader.Services
             HoldenOnlyVPKFiles();
 #if DEBUG
             OpenAddonsFolder();
-            CsvFileContext.Destroy();
 #endif
             Exit();
         }
@@ -65,8 +63,6 @@ namespace Left4DeadAddonsDownloader.Services
             localAppFolder = AppDomain.CurrentDomain.BaseDirectory;
             pathToDownload = $"{localAppFolder}{appSettings.TemporaryDownloadFolder}";
             string osVersion = DetectOperationSystem();
-
-            // userAgent = "User-Agent: Left4DeadAddonsDownloader/1.0.0-alpha (+https://github.com/mchomem/Left4DeadAddonsDownloader)";
             userAgent = "User-Agent: Mozilla/5.0 (compatible; Left4DeadAddonsDownloader/1.0.0-alpha; +https://github.com/mchomem/Left4DeadAddonsDownloader)";
 
 #if DEBUG
@@ -144,21 +140,18 @@ namespace Left4DeadAddonsDownloader.Services
             string fileName = string.Empty;
             int fileSize = 0;
 
-            WebRequest req = WebRequest.Create(url);
-            req.Headers.Add(userAgent);
-            req.Method = "HEAD";
-
-            using (WebResponse resp = req.GetResponse())
+            using (WebClient client = new WebClient())
             {
-                resp.Headers.Add(userAgent);
+                client.Headers.Add(userAgent);
+                var data = client.DownloadData(url);
 
-                if (!string.IsNullOrEmpty(resp.Headers["Content-Disposition"]))
-                    file.Name = resp.Headers["Content-Disposition"].Substring(resp.Headers["Content-Disposition"].IndexOf("filename=") + 9).Replace("\"", "");
+                if (!string.IsNullOrEmpty(client.ResponseHeaders["Content-Disposition"]))
+                    file.Name = client.ResponseHeaders["Content-Disposition"].Substring(client.ResponseHeaders["Content-Disposition"].IndexOf("filename=") + 9).Replace("\"", "");
 
-                if (!string.IsNullOrEmpty(resp.Headers["x-bz-file-name"]))
-                    file.Name = resp.Headers["x-bz-file-name"].Split("/")[3];
+                if (!string.IsNullOrEmpty(client.ResponseHeaders["x-bz-file-name"]))
+                    file.Name = client.ResponseHeaders["x-bz-file-name"].Split("/")[3];
 
-                file.Size = Convert.ToInt32(resp.Headers["Content-Length"]);
+                file.Size = Convert.ToInt32(client.ResponseHeaders["Content-Length"]);
                 fileName = file.Name;
                 fileSize = file.Size;
 
@@ -206,12 +199,6 @@ namespace Left4DeadAddonsDownloader.Services
 
                         _fileDownloadRepository.Insert(new FileDownloaded() { Name = file.Name, Size = file.Size, UrlOrigin = url });
                         ConsoleMessage.Write($"Arquivo { file.Name } baixado de { url }", TypeMessage.SUCCESS);
-
-#if DEBUG
-                        // TODO: remover futuramente.
-                        // Para executar uma única vez em modo debug.
-                        break;
-#endif
                     }
                     catch (Exception e)
                     {
