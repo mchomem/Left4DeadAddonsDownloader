@@ -3,6 +3,7 @@ using Left4DeadAddonsDownloader.Core.Models.Interfaces;
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Left4DeadAddonsDownloader.UI.Views

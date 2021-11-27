@@ -55,6 +55,20 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.textBoxTemporaryDownloadFolder.Text = appSettings.Config.TemporaryDownloadFolder;
             this.textBoxDownloadListUrl.Text = appSettings.Config.DownloadListUrl;
             this.textBoxLeft4DeadAddonsFolder.Text = appSettings.Config.Left4DeadAddonsFolder;
+            this.textBoxUrlListFile.Text = appSettings.Config.UrlListFile;
+
+            if (appSettings.Config.Method.Equals("web"))
+                this.radioButtonWeb.Checked = true;
+            else
+                this.radioButtonFile.Checked = true;
+
+            if (appSettings.Credential.Enabled)
+                this.radioButtonYes.Checked = true;
+            else
+                this.radioButtonNo.Checked = true;
+
+            this.textBoxUser.Text = appSettings.Credential.User;
+            this.textBoxPassword.Text = appSettings.Credential.Password;
         }
 
         private void SaveSetup()
@@ -72,7 +86,15 @@ namespace Left4DeadAddonsDownloader.UI.Views
                     TemporaryDownloadFolder = this.textBoxTemporaryDownloadFolder.Text,
                     DownloadListUrl = this.textBoxDownloadListUrl.Text,
                     Left4DeadAddonsFolder = this.textBoxLeft4DeadAddonsFolder.Text,
+                    UrlListFile = this.textBoxUrlListFile.Text,
+                    Method = this.radioButtonWeb.Checked ? "web" : "file",
                     IsConfigured = true
+                },
+                Credential = new Credential()
+                {
+                    Enabled = this.radioButtonYes.Checked ? true: false,
+                    User = this.textBoxUser.Text,
+                    Password = this.textBoxPassword.Text
                 }
             });
 
@@ -88,7 +110,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
 
         private bool CheckAllFieldsFromForm()
         {
-            foreach (Control control in this.groupBox.Controls)
+            foreach (Control control in this.groupBoxConfig.Controls)
             {
                 if (control is TextBox && string.IsNullOrEmpty(((TextBox)control).Text))
                     return true;

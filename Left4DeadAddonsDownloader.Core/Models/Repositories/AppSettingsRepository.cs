@@ -25,10 +25,16 @@ namespace Left4DeadAddonsDownloader.Core.Models.Repositories
                     DownloadListUrl = configurationRoot["Config:DownloadListUrl"],
                     Left4DeadAddonsFolder = configurationRoot["Config:Left4DeadAddonsFolder"],
                     Method = configurationRoot["Config:Method"],
-                    FileList = configurationRoot["Config:FileList"],
+                    UrlListFile = configurationRoot["Config:UrlListFile"],
                     LogPath = configurationRoot["Config:LogPath"],
                     IsConfigured = Convert.ToBoolean(configurationRoot["Config:IsConfigured"])
-                }                
+                },
+                Credential = new Credential()
+                {
+                    Enabled = Convert.ToBoolean(configurationRoot["Credential:Enabled"]),
+                    User = configurationRoot["Credential:User"],
+                    Password = configurationRoot["Credential:Password"]
+                }
             };
         }
 

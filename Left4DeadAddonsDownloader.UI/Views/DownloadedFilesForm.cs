@@ -58,7 +58,11 @@ namespace Left4DeadAddonsDownloader.UI.Views
                 this.dataGridViewDownloadedFiles.Columns.Add(columnUrl);
             }
 
-            foreach (FileDownloaded fileDownloaded in _fileDownloadedRepository.Select())
+            List<FileDownloaded> fileDownloadeds = _fileDownloadedRepository.Select();
+
+            this.labelTotalRecords.Text = $"Total records: { fileDownloadeds.Count }";
+
+            foreach (FileDownloaded fileDownloaded in fileDownloadeds)
             {
                 this.dataGridViewDownloadedFiles.Rows.Add
                     (

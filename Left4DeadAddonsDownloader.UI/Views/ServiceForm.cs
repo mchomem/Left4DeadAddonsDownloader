@@ -8,7 +8,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
     {
         #region Fields
 
-        private readonly IExecutorService _executorService;
+        private IExecutorService _executorService;
 
         #endregion
 
@@ -26,14 +26,39 @@ namespace Left4DeadAddonsDownloader.UI.Views
 
         private void ServiceForm_Load(object sender, EventArgs e)
         {
-            this.ExcuteService();
+            if (!this.backgroundWorkerServiceForm.IsBusy)
+                this.backgroundWorkerServiceForm.RunWorkerAsync();
         }
 
-        private void ExcuteService()
+        private void backgroundWorkerServiceForm_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            _executorService.Start();
+            this._executorService.Start(this.backgroundWorkerServiceForm);
+        }
 
-            MessageBox.Show(this, "Done", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        private void backgroundWorkerServiceForm_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            this.RefreshGrieView();
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void RefreshGrieView()
+        {
+            this.dataGridViewLog.Columns.Clear();
+
+            if (this.dataGridViewLog.Columns.Count.Equals(0))
+            {
+                DataGridViewColumn columnDescription = new DataGridViewTextBoxColumn();
+                columnDescription.ReadOnly = true;
+                this.dataGridViewLog.Columns.Add(columnDescription);
+            }
+
+            foreach (string text in _executorService.GetProgressLog())
+            {
+                this.dataGridViewLog.Rows.Add(text);
+            }
         }
 
         #endregion

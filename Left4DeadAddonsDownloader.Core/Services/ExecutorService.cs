@@ -1,10 +1,10 @@
 ﻿using Left4DeadAddonsDownloader.Core.Models.Entities;
 using Left4DeadAddonsDownloader.Core.Models.Interfaces;
 using Left4DeadAddonsDownloader.Core.Utils;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -20,40 +20,66 @@ namespace Left4DeadAddonsDownloader.Core.Services
         #region Fields
 
         private AppSettings appSettings;
-        private Credential credentials;
         private string left4DeadValidAddons;
         private string localAppFolder;
         private string pathToDownload;
         private string userAgent;
         private readonly IFileDownloadedRepository _fileDownloadRepository;
-        public List<string> ProgressLog { get; set; }
+        private readonly IAppSettingsRepository _appSettingsRepository;
+        private List<string> progressLog;
+        private BackgroundWorker BackgroundWorker { get; set; }
+        private int Percentage { get; set; }
 
         #endregion
 
-        public ExecutorService(IFileDownloadedRepository fileDownloadRepository)
+        #region Properties
+
+        private List<string> ProgressLog
         {
-            _fileDownloadRepository = fileDownloadRepository;
+            get
+            {
+                if (progressLog == null)
+                    progressLog = new List<string>();
+                return progressLog;
+            }
+            set
+            {
+                progressLog = value;
+            }
         }
 
-        public void Start()
-        {
-            // Console.Title = "Left 4 Dead Addons Downloader";
-            // ConsoleMessage.Write("Processo iniciado", TypeMessage.INFORMATION);
-            LogProgress.Add();
+        #endregion
 
-            ReadAppSettings();
-            InicializeProperties();
-            CheckLeft4DeadAddonsFolder();
-            DownloadVpkFiles(GetUrlListsToDownload());
-            ExtractFilesToAddonsFolder();
-            HoldenOnlyVPKFiles();
-#if DEBUG
-            OpenAddonsFolder();
-#endif
-            Exit();
+        #region Construtros
+
+        public ExecutorService(IFileDownloadedRepository fileDownloadRepository, IAppSettingsRepository appSettingsRepository)
+        {
+            this._fileDownloadRepository = fileDownloadRepository;
+            this._appSettingsRepository = appSettingsRepository;
         }
+
+        #endregion
 
         #region Methods
+
+        public void Start(BackgroundWorker background)
+        {
+            BackgroundWorker = background;
+
+            // ConsoleMessage.Write("Processo iniciado", TypeMessage.INFORMATION);
+            this.AddProgressLog("Processo iniciado");
+
+            this.ReadAppSettings();
+            this.InicializeProperties();
+            this.CheckLeft4DeadAddonsFolder();
+            this.DownloadVpkFiles(GetUrlListsToDownload());
+            this.ExtractFilesToAddonsFolder();
+            this.HoldenOnlyVPKFiles();
+#if DEBUG
+            this.OpenAddonsFolder();
+#endif
+            // this.Exit();
+        }
 
         public void OpenAddonsFolder()
         {
@@ -69,6 +95,7 @@ namespace Left4DeadAddonsDownloader.Core.Services
 
 #if DEBUG
             // ConsoleMessage.Write(userAgent, TypeMessage.INFORMATION);
+            this.AddProgressLog(userAgent);
 #endif
         }
 
@@ -76,6 +103,8 @@ namespace Left4DeadAddonsDownloader.Core.Services
         {
             int value = 1;
             // ConsoleMessage.Write($"Encerrando aplicação em { value } minuto", TypeMessage.INFORMATION);
+            this.AddProgressLog($"Encerrando aplicação em { value } minuto");            
+
             Log.Add(string.Empty.PadLeft(150, '='));
             Thread.Sleep(new TimeSpan(0, value, 0));
             Environment.Exit(0);
@@ -85,19 +114,22 @@ namespace Left4DeadAddonsDownloader.Core.Services
         {
             OperatingSystem os = Environment.OSVersion;
             // ConsoleMessage.Write($"Sistema operacional detectado { os.VersionString }", TypeMessage.INFORMATION);
+            this.AddProgressLog($"Sistema operacional detectado { os.VersionString }");
             return os.Version.ToString(2);
         }
 
         public void CheckLeft4DeadAddonsFolder()
         {
             // ConsoleMessage.Write("Verificando diretório addons do Left 4 Dead. Aguarde", TypeMessage.INFORMATION);
+            this.AddProgressLog("Verificando diretório addons do Left 4 Dead. Aguarde");
 
-            left4DeadValidAddons = appSettings.Config.Left4DeadAddonsFolder;
+            this.left4DeadValidAddons = this.appSettings.Config.Left4DeadAddonsFolder;
 
-            if (!Directory.Exists(left4DeadValidAddons))
+            if (!Directory.Exists(this.left4DeadValidAddons))
             {
                 // ConsoleMessage.Write("O local dos Addons não foi localizado na sua máquina. Verifique a sua instalação de Left 4 Dead", TypeMessage.WARNING);
-                Exit();
+                this.AddProgressLog("O local dos Addons não foi localizado na sua máquina. Verifique a sua instalação de Left 4 Dead");
+                this.Exit();
             }
         }
 
@@ -109,29 +141,32 @@ namespace Left4DeadAddonsDownloader.Core.Services
             {
                 string content = string.Empty;
 
-                if (appSettings.Config.Method.Equals("web"))
+                if (this.appSettings.Config.Method.Equals("web"))
                 {
                     using (WebClient client = new WebClient())
                     {
-                        Stream repoUrlDownloads = client.OpenRead($"{appSettings.Config.DownloadListUrl}/{appSettings.Config.FileList}");
+                        Stream repoUrlDownloads = client.OpenRead($"{ this.appSettings.Config.DownloadListUrl }/{ this.appSettings.Config.UrlListFile }");
                         StreamReader reader = new StreamReader(repoUrlDownloads);
                         content = reader.ReadToEnd();
                     }
                 }
                 else
                 {
-                    using (StreamReader sw = new StreamReader($"{localAppFolder}{appSettings.Config.FileList}"))
+                    using (StreamReader sw = new StreamReader($"{ this.localAppFolder }{ this.appSettings.Config.UrlListFile }"))
                         content = sw.ReadToEnd();
                 }
 
                 filesToDonwload = JsonConvert.DeserializeObject<JsonModel>(content).FilesToDownload;
                 string plural = filesToDonwload.Count > 1 ? "s" : string.Empty;
                 // ConsoleMessage.Write($"Listagem de url's pronta com { filesToDonwload.Count } mapa{ plural }", TypeMessage.INFORMATION);
+                this.AddProgressLog($"Listagem de url's pronta com { filesToDonwload.Count } mapa{ plural }");
+
                 return filesToDonwload;
             }
             catch (Exception e)
             {
                 // ConsoleMessage.Write($"Falha: { e.Message }", TypeMessage.ERROR);
+                this.AddProgressLog($"Falha: { e.Message }");
                 throw;
             }
         }
@@ -157,7 +192,8 @@ namespace Left4DeadAddonsDownloader.Core.Services
                 fileName = file.Name;
                 fileSize = file.Size;
 
-                if (_fileDownloadRepository.Select().Any(x => x.Name.Equals(fileName) && x.Size == fileSize && x.UrlOrigin == url))
+                if (this._fileDownloadRepository.Select().Any(x => x.Name.Equals(fileName)
+                    && x.Size == fileSize && x.UrlOrigin == url))
                     return true;
             }
 
@@ -177,17 +213,19 @@ namespace Left4DeadAddonsDownloader.Core.Services
 
                     try
                     {
-                        if (FileAlreadyDownloaded(url, out file))
+                        if (this.FileAlreadyDownloaded(url, out file))
                         {
                             // ConsoleMessage.Write($"Ignorando arquivo { file.Name } já baixado anteriormente", TypeMessage.WARNING);
+                            this.AddProgressLog($"Ignorando arquivo { file.Name } já baixado anteriormente");
                             continue;
                         }
 
                         string idMap = string.Empty;
                         client.Headers.Add(userAgent);
 
-                        if (credentials.Enabled)
-                            client.Credentials = new NetworkCredential(credentials.User, credentials.Password);
+                        if (this.appSettings.Credential.Enabled)
+                            client.Credentials =
+                                new NetworkCredential(this.appSettings.Credential.User, this.appSettings.Credential.Password);
 
                         if (string.IsNullOrEmpty(file.Name))
                         {
@@ -199,8 +237,14 @@ namespace Left4DeadAddonsDownloader.Core.Services
                         else
                             client.DownloadFile(url, @$"{ pathToDownload }\{ file.Name }");
 
-                        _fileDownloadRepository.Insert(new FileDownloaded() { Name = file.Name, Size = file.Size, UrlOrigin = url });
+                        this._fileDownloadRepository.Insert(new FileDownloaded()
+                        {
+                            Name = file.Name,
+                            Size = file.Size,
+                            UrlOrigin = url
+                        });
                         // ConsoleMessage.Write($"Arquivo { file.Name } baixado de { url }", TypeMessage.SUCCESS);
+                        this.AddProgressLog($"Arquivo { file.Name } baixado de { url }");
                     }
                     catch (Exception e)
                     {
@@ -213,7 +257,8 @@ namespace Left4DeadAddonsDownloader.Core.Services
                         }
 
                         // ConsoleMessage.Write($"Falha: { e.Message } StackTrace: { formattedStackStrace }", TypeMessage.ERROR);
-                        Exit();
+                        this.AddProgressLog($"Falha: { e.Message } StackTrace: { formattedStackStrace }");
+                        this.Exit();
                     }
                 }
             }
@@ -230,13 +275,15 @@ namespace Left4DeadAddonsDownloader.Core.Services
                 {
                     ZipFile.ExtractToDirectory(zipVpk.FullName, left4DeadValidAddons, true);
                     // ConsoleMessage.Write($"Arquivo extraído para addons: { zipVpk.Name }", TypeMessage.SUCCESS);
+                    this.AddProgressLog($"Arquivo extraído para addons: { zipVpk.Name }");
                 }
 
-                DeleteTempFolder();
+                this.DeleteTempFolder();
             }
             catch (Exception e)
             {
                 // ConsoleMessage.Write($"Falha: { e.Message }", TypeMessage.ERROR);
+                this.AddProgressLog($"Falha: { e.Message }");
             }
         }
 
@@ -246,6 +293,7 @@ namespace Left4DeadAddonsDownloader.Core.Services
             {
                 Directory.CreateDirectory(pathToDownload);
                 // ConsoleMessage.Write("Diretório temporário criado", TypeMessage.SUCCESS);
+                this.AddProgressLog("Diretório temporário criado");
             }
         }
 
@@ -255,13 +303,15 @@ namespace Left4DeadAddonsDownloader.Core.Services
             {
                 Directory.Delete(pathToDownload, true);
                 // ConsoleMessage.Write("Diretório temporário excluído", TypeMessage.SUCCESS);
+                this.AddProgressLog("Diretório temporário excluído");
             }
         }
 
         public void HoldenOnlyVPKFiles()
         {
             // ConsoleMessage.Write("Limpando diretório addons", TypeMessage.INFORMATION);
-            DirectoryInfo di = new DirectoryInfo(left4DeadValidAddons);
+            this.AddProgressLog("Limpando diretório addons");
+            DirectoryInfo di = new DirectoryInfo(this.left4DeadValidAddons);
             // Considera somente os arquivos que não sejam da extensão VPK (Valve Pak).
             FileInfo[] files = di.GetFiles().Where(p => !p.Extension.Equals(".vpk")).ToArray();
 
@@ -272,46 +322,31 @@ namespace Left4DeadAddonsDownloader.Core.Services
                     file.Attributes = FileAttributes.Normal;
                     File.Delete(file.FullName);
                     // ConsoleMessage.Write($"Arquivo { file.Name } excluído", TypeMessage.SUCCESS);
+                    this.AddProgressLog($"Arquivo { file.Name } excluído");
                 }
                 catch (Exception e)
                 {
                     // ConsoleMessage.Write($"Falha: { e.Message }", TypeMessage.ERROR);
+                    this.AddProgressLog($"Falha: { e.Message }");
                 }
             }
         }
 
         public void ReadAppSettings()
         {
-            try
-            {
-                IConfigurationBuilder builder = new ConfigurationBuilder()
-                    .AddJsonFile($"appsettings.json", true, true);
-                IConfigurationRoot config = builder.Build();
-
-                appSettings = new AppSettings();
-                appSettings.Config.TemporaryDownloadFolder = config["AppConfiguration:TemporaryDownloadFolder"];
-                appSettings.Config.DownloadListUrl = config["AppConfiguration:DownloadListUrl"];
-                appSettings.Config.Left4DeadAddonsFolder = config["AppConfiguration:Left4DeadAddonsFolder"];
-                appSettings.Config.Method = config["AppConfiguration:Method"];
-                appSettings.Config.FileList = config["AppConfiguration:FileList"];
-                appSettings.Config.LogPath = config["AppConfiguration:LogPath"];
-
-                credentials = new Credential();
-                credentials.Enabled = Convert.ToBoolean(config["Credentials:Enabled"]);
-                credentials.User = config["Credentials:User"];
-                credentials.Password = config["Credentials:Password"];
-
-                // ConsoleMessage.Write("Configuração carregada", TypeMessage.SUCCESS);
-            }
-            catch (Exception e)
-            {
-                // ConsoleMessage.Write($"Falha: { e.Message }", TypeMessage.ERROR);
-            }
+            this.appSettings = this._appSettingsRepository.Details(null);
+            this.AddProgressLog("Configuração carregada");
         }
 
         public void AddProgressLog(string text)
         {
-            this.ProgressLog.Add(text);
+            this.ProgressLog.Add($"[{ DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") }]: { text }");
+            this.BackgroundWorker.ReportProgress(++this.Percentage);
+        }
+
+        public List<string> GetProgressLog()
+        {
+            return this.ProgressLog;
         }
 
         #endregion

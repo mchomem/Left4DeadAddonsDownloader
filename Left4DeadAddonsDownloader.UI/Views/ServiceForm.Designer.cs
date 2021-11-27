@@ -30,9 +30,10 @@ namespace Left4DeadAddonsDownloader.UI.Views
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewLog = new System.Windows.Forms.DataGridView();
+            this.backgroundWorkerServiceForm = new System.ComponentModel.BackgroundWorker();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLog)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -40,7 +41,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.dataGridView1);
+            this.groupBox1.Controls.Add(this.dataGridViewLog);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(360, 337);
@@ -48,16 +49,34 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Log";
             // 
-            // dataGridView1
+            // dataGridViewLog
             // 
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.dataGridViewLog.AllowUserToAddRows = false;
+            this.dataGridViewLog.AllowUserToDeleteRows = false;
+            this.dataGridViewLog.AllowUserToResizeColumns = false;
+            this.dataGridViewLog.AllowUserToResizeRows = false;
+            this.dataGridViewLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(6, 22);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(348, 309);
-            this.dataGridView1.TabIndex = 1;
+            this.dataGridViewLog.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridViewLog.BackgroundColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.dataGridViewLog.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.dataGridViewLog.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewLog.ColumnHeadersVisible = false;
+            this.dataGridViewLog.GridColor = System.Drawing.Color.Black;
+            this.dataGridViewLog.Location = new System.Drawing.Point(6, 22);
+            this.dataGridViewLog.Name = "dataGridViewLog";
+            this.dataGridViewLog.RowHeadersVisible = false;
+            this.dataGridViewLog.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.Black;
+            this.dataGridViewLog.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.Lime;
+            this.dataGridViewLog.Size = new System.Drawing.Size(348, 309);
+            this.dataGridViewLog.TabIndex = 1;
+            // 
+            // backgroundWorkerServiceForm
+            // 
+            this.backgroundWorkerServiceForm.WorkerReportsProgress = true;
+            this.backgroundWorkerServiceForm.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerServiceForm_DoWork);
+            this.backgroundWorkerServiceForm.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerServiceForm_ProgressChanged);
             // 
             // ServiceForm
             // 
@@ -71,7 +90,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.Text = "Service";
             this.Load += new System.EventHandler(this.ServiceForm_Load);
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLog)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -79,6 +98,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGridViewLog;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerServiceForm;
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Left4DeadAddonsDownloader.Core.Models.Entities;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Left4DeadAddonsDownloader.Core.Models.Interfaces
 {
     public interface IExecutorService
     {
-        void Start();
+        void Start(BackgroundWorker background);
         void OpenAddonsFolder();
         void InicializeProperties();
         void Exit();
@@ -20,5 +21,6 @@ namespace Left4DeadAddonsDownloader.Core.Models.Interfaces
         void HoldenOnlyVPKFiles();
         void ReadAppSettings();
         void AddProgressLog(string text);
+        List<string> GetProgressLog();
     }
 }

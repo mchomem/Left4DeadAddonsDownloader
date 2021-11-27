@@ -30,6 +30,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
         private void InitializeComponent()
         {
             this.groupBoxRecords = new System.Windows.Forms.GroupBox();
+            this.labelTotalRecords = new System.Windows.Forms.Label();
             this.dataGridViewDownloadedFiles = new System.Windows.Forms.DataGridView();
             this.groupBoxRecords.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDownloadedFiles)).BeginInit();
@@ -40,13 +41,23 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.groupBoxRecords.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxRecords.Controls.Add(this.labelTotalRecords);
             this.groupBoxRecords.Controls.Add(this.dataGridViewDownloadedFiles);
             this.groupBoxRecords.Location = new System.Drawing.Point(12, 12);
             this.groupBoxRecords.Name = "groupBoxRecords";
-            this.groupBoxRecords.Size = new System.Drawing.Size(760, 337);
+            this.groupBoxRecords.Size = new System.Drawing.Size(760, 391);
             this.groupBoxRecords.TabIndex = 1;
             this.groupBoxRecords.TabStop = false;
             this.groupBoxRecords.Text = "Records";
+            // 
+            // labelTotalRecords
+            // 
+            this.labelTotalRecords.Location = new System.Drawing.Point(6, 352);
+            this.labelTotalRecords.Name = "labelTotalRecords";
+            this.labelTotalRecords.Size = new System.Drawing.Size(748, 36);
+            this.labelTotalRecords.TabIndex = 2;
+            this.labelTotalRecords.Text = "Total records: 0";
+            this.labelTotalRecords.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // dataGridViewDownloadedFiles
             // 
@@ -64,14 +75,14 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.dataGridViewDownloadedFiles.RowHeadersVisible = false;
             this.dataGridViewDownloadedFiles.RowTemplate.Height = 25;
             this.dataGridViewDownloadedFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewDownloadedFiles.Size = new System.Drawing.Size(748, 309);
+            this.dataGridViewDownloadedFiles.Size = new System.Drawing.Size(748, 327);
             this.dataGridViewDownloadedFiles.TabIndex = 1;
             // 
             // DownloadedFilesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 361);
+            this.ClientSize = new System.Drawing.Size(784, 415);
             this.Controls.Add(this.groupBoxRecords);
             this.MaximizeBox = false;
             this.Name = "DownloadedFilesForm";
@@ -87,5 +98,6 @@ namespace Left4DeadAddonsDownloader.UI.Views
         #endregion
         private System.Windows.Forms.GroupBox groupBoxRecords;
         private System.Windows.Forms.DataGridView dataGridViewDownloadedFiles;
+        private System.Windows.Forms.Label labelTotalRecords;
     }
 }
