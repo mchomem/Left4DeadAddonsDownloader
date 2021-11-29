@@ -340,8 +340,10 @@ namespace Left4DeadAddonsDownloader.Core.Services
 
         public void AddProgressLog(string text)
         {
-            this.ProgressLog.Add($"[{ DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") }]: { text }");
+            text = $"[{ DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") }]: { text }";
+            this.ProgressLog.Add(text);
             this.BackgroundWorker.ReportProgress(++this.Percentage);
+            Log.Add(text);
         }
 
         public List<string> GetProgressLog()

@@ -47,13 +47,13 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.labelTemporaryDownloadFolder = new System.Windows.Forms.Label();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBoxCredential = new System.Windows.Forms.GroupBox();
-            this.labelEnabled = new System.Windows.Forms.Label();
-            this.radioButtonYes = new System.Windows.Forms.RadioButton();
-            this.radioButtonNo = new System.Windows.Forms.RadioButton();
-            this.labelUser = new System.Windows.Forms.Label();
-            this.textBoxUser = new System.Windows.Forms.TextBox();
-            this.labelPassword = new System.Windows.Forms.Label();
             this.textBoxPassword = new System.Windows.Forms.TextBox();
+            this.labelPassword = new System.Windows.Forms.Label();
+            this.textBoxUser = new System.Windows.Forms.TextBox();
+            this.labelUser = new System.Windows.Forms.Label();
+            this.radioButtonNo = new System.Windows.Forms.RadioButton();
+            this.radioButtonYes = new System.Windows.Forms.RadioButton();
+            this.labelEnabled = new System.Windows.Forms.Label();
             this.groupBoxConfig.SuspendLayout();
             this.groupBoxCredential.SuspendLayout();
             this.SuspendLayout();
@@ -231,24 +231,37 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.groupBoxCredential.TabStop = false;
             this.groupBoxCredential.Text = "Credential";
             // 
-            // labelEnabled
+            // textBoxPassword
             // 
-            this.labelEnabled.AutoSize = true;
-            this.labelEnabled.Location = new System.Drawing.Point(6, 24);
-            this.labelEnabled.Name = "labelEnabled";
-            this.labelEnabled.Size = new System.Drawing.Size(52, 15);
-            this.labelEnabled.TabIndex = 0;
-            this.labelEnabled.Text = "Enabled:";
+            this.textBoxPassword.Location = new System.Drawing.Point(173, 76);
+            this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.Size = new System.Drawing.Size(161, 23);
+            this.textBoxPassword.TabIndex = 6;
             // 
-            // radioButtonYes
+            // labelPassword
             // 
-            this.radioButtonYes.AutoSize = true;
-            this.radioButtonYes.Location = new System.Drawing.Point(174, 22);
-            this.radioButtonYes.Name = "radioButtonYes";
-            this.radioButtonYes.Size = new System.Drawing.Size(42, 19);
-            this.radioButtonYes.TabIndex = 1;
-            this.radioButtonYes.Text = "Yes";
-            this.radioButtonYes.UseVisualStyleBackColor = true;
+            this.labelPassword.AutoSize = true;
+            this.labelPassword.Location = new System.Drawing.Point(6, 79);
+            this.labelPassword.Name = "labelPassword";
+            this.labelPassword.Size = new System.Drawing.Size(60, 15);
+            this.labelPassword.TabIndex = 5;
+            this.labelPassword.Text = "Password:";
+            // 
+            // textBoxUser
+            // 
+            this.textBoxUser.Location = new System.Drawing.Point(173, 47);
+            this.textBoxUser.Name = "textBoxUser";
+            this.textBoxUser.Size = new System.Drawing.Size(161, 23);
+            this.textBoxUser.TabIndex = 4;
+            // 
+            // labelUser
+            // 
+            this.labelUser.AutoSize = true;
+            this.labelUser.Location = new System.Drawing.Point(6, 50);
+            this.labelUser.Name = "labelUser";
+            this.labelUser.Size = new System.Drawing.Size(33, 15);
+            this.labelUser.TabIndex = 3;
+            this.labelUser.Text = "User:";
             // 
             // radioButtonNo
             // 
@@ -262,37 +275,24 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.radioButtonNo.Text = "No";
             this.radioButtonNo.UseVisualStyleBackColor = true;
             // 
-            // labelUser
+            // radioButtonYes
             // 
-            this.labelUser.AutoSize = true;
-            this.labelUser.Location = new System.Drawing.Point(6, 50);
-            this.labelUser.Name = "labelUser";
-            this.labelUser.Size = new System.Drawing.Size(33, 15);
-            this.labelUser.TabIndex = 3;
-            this.labelUser.Text = "User:";
+            this.radioButtonYes.AutoSize = true;
+            this.radioButtonYes.Location = new System.Drawing.Point(174, 22);
+            this.radioButtonYes.Name = "radioButtonYes";
+            this.radioButtonYes.Size = new System.Drawing.Size(42, 19);
+            this.radioButtonYes.TabIndex = 1;
+            this.radioButtonYes.Text = "Yes";
+            this.radioButtonYes.UseVisualStyleBackColor = true;
             // 
-            // textBoxUser
+            // labelEnabled
             // 
-            this.textBoxUser.Location = new System.Drawing.Point(173, 47);
-            this.textBoxUser.Name = "textBoxUser";
-            this.textBoxUser.Size = new System.Drawing.Size(161, 23);
-            this.textBoxUser.TabIndex = 4;
-            // 
-            // labelPassword
-            // 
-            this.labelPassword.AutoSize = true;
-            this.labelPassword.Location = new System.Drawing.Point(6, 79);
-            this.labelPassword.Name = "labelPassword";
-            this.labelPassword.Size = new System.Drawing.Size(60, 15);
-            this.labelPassword.TabIndex = 5;
-            this.labelPassword.Text = "Password:";
-            // 
-            // textBoxPassword
-            // 
-            this.textBoxPassword.Location = new System.Drawing.Point(173, 76);
-            this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.Size = new System.Drawing.Size(161, 23);
-            this.textBoxPassword.TabIndex = 6;
+            this.labelEnabled.AutoSize = true;
+            this.labelEnabled.Location = new System.Drawing.Point(6, 24);
+            this.labelEnabled.Name = "labelEnabled";
+            this.labelEnabled.Size = new System.Drawing.Size(52, 15);
+            this.labelEnabled.TabIndex = 0;
+            this.labelEnabled.Text = "Enabled:";
             // 
             // SetupForm
             // 
@@ -303,9 +303,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.Controls.Add(this.buttonReset);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.groupBoxConfig);
-            this.MaximizeBox = false;
             this.Name = "SetupForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Setup";
             this.Load += new System.EventHandler(this.SetupForm_Load);
             this.groupBoxConfig.ResumeLayout(false);

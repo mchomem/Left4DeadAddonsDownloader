@@ -84,9 +84,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 361);
             this.Controls.Add(this.groupBox1);
-            this.MaximizeBox = false;
             this.Name = "ServiceForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Service";
             this.Load += new System.EventHandler(this.ServiceForm_Load);
             this.groupBox1.ResumeLayout(false);

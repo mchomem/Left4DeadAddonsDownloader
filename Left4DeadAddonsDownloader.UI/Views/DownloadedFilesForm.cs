@@ -1,12 +1,13 @@
 ﻿using Left4DeadAddonsDownloader.Core.Models.Entities;
 using Left4DeadAddonsDownloader.Core.Models.Interfaces;
+using Left4DeadAddonsDownloader.UI.Models;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Left4DeadAddonsDownloader.UI.Views
 {
-    public partial class DownloadedFilesForm : Form
+    public partial class DownloadedFilesForm : FormModel
     {
         #region Fields
 

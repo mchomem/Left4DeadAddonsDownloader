@@ -1,10 +1,11 @@
 ﻿using Left4DeadAddonsDownloader.Core.Models.Interfaces;
+using Left4DeadAddonsDownloader.UI.Models;
 using System;
 using System.Windows.Forms;
 
 namespace Left4DeadAddonsDownloader.UI.Views
 {
-    public partial class ServiceForm : Form
+    public partial class ServiceForm : FormModel
     {
         #region Fields
 

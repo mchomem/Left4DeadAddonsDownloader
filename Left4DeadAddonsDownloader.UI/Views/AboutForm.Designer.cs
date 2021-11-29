@@ -36,9 +36,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 161);
-            this.MaximizeBox = false;
             this.Name = "AboutForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "About Left 4 Dead Addons Downloader";
             this.ResumeLayout(false);
 

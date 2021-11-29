@@ -1,11 +1,12 @@
 ﻿using Left4DeadAddonsDownloader.Core.Models.Entities;
 using Left4DeadAddonsDownloader.Core.Models.Interfaces;
+using Left4DeadAddonsDownloader.UI.Models;
 using System;
 using System.Windows.Forms;
 
 namespace Left4DeadAddonsDownloader.UI.Views
 {
-    public partial class SetupForm : Form
+    public partial class SetupForm : FormModel
     {
         #region Fields
 
