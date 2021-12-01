@@ -274,6 +274,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.radioButtonNo.TabStop = true;
             this.radioButtonNo.Text = "No";
             this.radioButtonNo.UseVisualStyleBackColor = true;
+            this.radioButtonNo.CheckedChanged += new System.EventHandler(this.radioButtonNo_CheckedChanged);
             // 
             // radioButtonYes
             // 
@@ -284,6 +285,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.radioButtonYes.TabIndex = 1;
             this.radioButtonYes.Text = "Yes";
             this.radioButtonYes.UseVisualStyleBackColor = true;
+            this.radioButtonYes.CheckedChanged += new System.EventHandler(this.radioButtonYes_CheckedChanged);
             // 
             // labelEnabled
             // 

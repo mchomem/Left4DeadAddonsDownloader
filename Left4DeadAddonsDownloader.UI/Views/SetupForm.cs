@@ -20,6 +20,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
         {
             InitializeComponent();
             this._appSettingsRepository = appSettingsRepository;
+            this.InitializeForm();
         }
 
         #endregion
@@ -33,12 +34,12 @@ namespace Left4DeadAddonsDownloader.UI.Views
 
         private void buttonChooseTemporaryDownloadFolder_Click(object sender, EventArgs e)
         {
-            this.textBoxTemporaryDownloadFolder.Text = this.OpenFolderDialog();
+            this.textBoxTemporaryDownloadFolder.Text = this.OpenFolderDialog(this.textBoxTemporaryDownloadFolder);
         }
 
         private void buttonChooseLeft4DeadAddonsFolder_Click(object sender, EventArgs e)
         {
-            this.textBoxLeft4DeadAddonsFolder.Text = this.OpenFolderDialog();
+            this.textBoxLeft4DeadAddonsFolder.Text = this.OpenFolderDialog(this.textBoxLeft4DeadAddonsFolder);
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -46,9 +47,24 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.SaveSetup();
         }
 
+        private void radioButtonYes_CheckedChanged(object sender, EventArgs e)
+        {
+            this.EnableDisableCredentials(true);
+        }
+
+        private void radioButtonNo_CheckedChanged(object sender, EventArgs e)
+        {
+            this.EnableDisableCredentials(false);
+        }
+
         #endregion
 
         #region Methods
+
+        private void InitializeForm()
+        {
+            this.EnableDisableCredentials(false);
+        }
 
         private void LoadData()
         {
@@ -102,11 +118,11 @@ namespace Left4DeadAddonsDownloader.UI.Views
             MessageBox.Show(this, "Done", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private string OpenFolderDialog()
+        private string OpenFolderDialog(TextBox textBox)
         {
             return this.folderBrowserDialog.ShowDialog() == DialogResult.OK
                 ? this.folderBrowserDialog.SelectedPath
-                : string.Empty;
+                : textBox.Text;
         }
 
         private bool CheckAllFieldsFromForm()
@@ -118,6 +134,14 @@ namespace Left4DeadAddonsDownloader.UI.Views
             }
 
             return false;
+        }
+
+        private void EnableDisableCredentials(bool flag)
+        {
+            this.textBoxUser.Enabled = flag;
+            this.textBoxPassword.Enabled = flag;
+            this.textBoxUser.Text = string.Empty;
+            this.textBoxPassword.Text = string.Empty;
         }
 
         #endregion
