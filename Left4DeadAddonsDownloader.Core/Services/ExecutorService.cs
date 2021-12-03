@@ -26,26 +26,18 @@ namespace Left4DeadAddonsDownloader.Core.Services
         private string userAgent;
         private readonly IFileDownloadedRepository _fileDownloadRepository;
         private readonly IAppSettingsRepository _appSettingsRepository;
-        private List<string> progressLog;
-        private BackgroundWorker BackgroundWorker { get; set; }
-        private int Percentage { get; set; }
+        private List<string> progressLog = new List<string>();
 
         #endregion
 
         #region Properties
+        private BackgroundWorker BackgroundWorker { get; set; }
+        private int Percentage { get; set; }
 
         private List<string> ProgressLog
         {
-            get
-            {
-                if (progressLog == null)
-                    progressLog = new List<string>();
-                return progressLog;
-            }
-            set
-            {
-                progressLog = value;
-            }
+            get { return progressLog; }
+            set { progressLog = value; }
         }
 
         #endregion

@@ -57,6 +57,11 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.EnableDisableCredentials(false);
         }
 
+        private void buttonToggleViewChar_Click(object sender, EventArgs e)
+        {
+            this.ToogleViewChar();
+        }
+
         #endregion
 
         #region Methods
@@ -142,6 +147,14 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.textBoxPassword.Enabled = flag;
             this.textBoxUser.Text = string.Empty;
             this.textBoxPassword.Text = string.Empty;
+        }
+
+        private void ToogleViewChar()
+        {
+            if (this.textBoxPassword.PasswordChar == '*')
+                this.textBoxPassword.PasswordChar = char.MinValue;
+            else
+                this.textBoxPassword.PasswordChar = '*';
         }
 
         #endregion

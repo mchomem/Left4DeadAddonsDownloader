@@ -51,15 +51,14 @@ namespace Left4DeadAddonsDownloader.UI.Views
 
             if (this.dataGridViewLog.Columns.Count.Equals(0))
             {
-                DataGridViewColumn columnDescription = new DataGridViewTextBoxColumn();
-                columnDescription.ReadOnly = true;
-                this.dataGridViewLog.Columns.Add(columnDescription);
+                DataGridViewColumn columnLogDescription = new DataGridViewTextBoxColumn();
+                columnLogDescription.ReadOnly = true;
+                this.dataGridViewLog.Columns.Add(columnLogDescription);
             }
 
-            foreach (string text in _executorService.GetProgressLog())
-            {
-                this.dataGridViewLog.Rows.Add(text);
-            }
+            // TODO: coleção está sendo alterada.
+            foreach (string text in _executorService.GetProgressLog())            
+                this.dataGridViewLog.Rows.Add(text);            
         }
 
         #endregion

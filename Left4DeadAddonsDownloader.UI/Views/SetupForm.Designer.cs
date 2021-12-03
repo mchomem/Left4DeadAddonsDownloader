@@ -54,6 +54,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.radioButtonNo = new System.Windows.Forms.RadioButton();
             this.radioButtonYes = new System.Windows.Forms.RadioButton();
             this.labelEnabled = new System.Windows.Forms.Label();
+            this.buttonToggleViewChar = new System.Windows.Forms.Button();
             this.groupBoxConfig.SuspendLayout();
             this.groupBoxCredential.SuspendLayout();
             this.SuspendLayout();
@@ -217,6 +218,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             // 
             // groupBoxCredential
             // 
+            this.groupBoxCredential.Controls.Add(this.buttonToggleViewChar);
             this.groupBoxCredential.Controls.Add(this.textBoxPassword);
             this.groupBoxCredential.Controls.Add(this.labelPassword);
             this.groupBoxCredential.Controls.Add(this.textBoxUser);
@@ -235,6 +237,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             // 
             this.textBoxPassword.Location = new System.Drawing.Point(173, 76);
             this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.PasswordChar = '*';
             this.textBoxPassword.Size = new System.Drawing.Size(161, 23);
             this.textBoxPassword.TabIndex = 6;
             // 
@@ -296,6 +299,15 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.labelEnabled.TabIndex = 0;
             this.labelEnabled.Text = "Enabled:";
             // 
+            // buttonToggleViewChar
+            // 
+            this.buttonToggleViewChar.Location = new System.Drawing.Point(340, 76);
+            this.buttonToggleViewChar.Name = "buttonToggleViewChar";
+            this.buttonToggleViewChar.Size = new System.Drawing.Size(31, 23);
+            this.buttonToggleViewChar.TabIndex = 7;
+            this.buttonToggleViewChar.UseVisualStyleBackColor = true;
+            this.buttonToggleViewChar.Click += new System.EventHandler(this.buttonToggleViewChar_Click);
+            // 
             // SetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -343,5 +355,6 @@ namespace Left4DeadAddonsDownloader.UI.Views
         private System.Windows.Forms.Label labelPassword;
         private System.Windows.Forms.TextBox textBoxUser;
         private System.Windows.Forms.Label labelUser;
+        private System.Windows.Forms.Button buttonToggleViewChar;
     }
 }
