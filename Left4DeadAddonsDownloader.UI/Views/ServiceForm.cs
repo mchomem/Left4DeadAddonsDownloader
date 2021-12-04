@@ -1,6 +1,7 @@
 ﻿using Left4DeadAddonsDownloader.Core.Models.Interfaces;
 using Left4DeadAddonsDownloader.UI.Models;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Left4DeadAddonsDownloader.UI.Views
@@ -38,16 +39,17 @@ namespace Left4DeadAddonsDownloader.UI.Views
 
         private void backgroundWorkerServiceForm_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
-            this.RefreshGrieView();
+            this.RefreshGridView();
         }
 
         #endregion
 
         #region Methods
 
-        private void RefreshGrieView()
+        private void RefreshGridView()
         {
             this.dataGridViewLog.Columns.Clear();
+            this.dataGridViewLog.Rows.Clear();
 
             if (this.dataGridViewLog.Columns.Count.Equals(0))
             {
@@ -56,9 +58,11 @@ namespace Left4DeadAddonsDownloader.UI.Views
                 this.dataGridViewLog.Columns.Add(columnLogDescription);
             }
 
-            // TODO: coleção está sendo alterada.
-            foreach (string text in _executorService.GetProgressLog())            
-                this.dataGridViewLog.Rows.Add(text);            
+            List<string> list = _executorService.GetProgressLog();
+
+            if (list.Count > 0)
+                foreach (string text in list)
+                    this.dataGridViewLog.Rows.Add(text);
         }
 
         #endregion

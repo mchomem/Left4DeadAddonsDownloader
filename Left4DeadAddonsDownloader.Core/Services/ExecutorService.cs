@@ -31,9 +31,9 @@ namespace Left4DeadAddonsDownloader.Core.Services
         #endregion
 
         #region Properties
+
         private BackgroundWorker BackgroundWorker { get; set; }
         private int Percentage { get; set; }
-
         private List<string> ProgressLog
         {
             get { return progressLog; }
@@ -56,7 +56,7 @@ namespace Left4DeadAddonsDownloader.Core.Services
 
         public void Start(BackgroundWorker background)
         {
-            BackgroundWorker = background;
+            this.BackgroundWorker = background;
 
             // ConsoleMessage.Write("Processo iniciado", TypeMessage.INFORMATION);
             this.AddProgressLog("Processo iniciado");
@@ -95,7 +95,7 @@ namespace Left4DeadAddonsDownloader.Core.Services
         {
             int value = 1;
             // ConsoleMessage.Write($"Encerrando aplicação em { value } minuto", TypeMessage.INFORMATION);
-            this.AddProgressLog($"Encerrando aplicação em { value } minuto");            
+            this.AddProgressLog($"Encerrando aplicação em { value } minuto");
 
             Log.Add(string.Empty.PadLeft(150, '='));
             Thread.Sleep(new TimeSpan(0, value, 0));
