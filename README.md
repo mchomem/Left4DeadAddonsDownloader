@@ -2,7 +2,7 @@
 
 Addon Download is a small tool to automate content download for the addons folder in the Left 4 Dead game. Developed in C#. net core, this tool is very practice and util, with one click it's possible to get all designed custom content to the game.
 
-![Left 4 Dead Addons Downloader](/Docs/img/Left 4 Dead Addons Downloader.png)
+![Left 4 Dead Addons Downloader](/Docs/img/l4dad.png)
 
 ## Tool features
 
