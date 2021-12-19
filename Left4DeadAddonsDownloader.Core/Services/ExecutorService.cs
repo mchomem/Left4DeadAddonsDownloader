@@ -233,7 +233,8 @@ namespace Left4DeadAddonsDownloader.Core.Services
                         {
                             Name = file.Name,
                             Size = file.Size,
-                            UrlOrigin = url
+                            UrlOrigin = url,
+                            DownloadAgain = false
                         });
                         // ConsoleMessage.Write($"Arquivo { file.Name } baixado de { url }", TypeMessage.SUCCESS);
                         this.AddProgressLog($"Arquivo { file.Name } baixado de { url }");

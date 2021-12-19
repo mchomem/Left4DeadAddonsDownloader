@@ -61,6 +61,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             List<string> list = _executorService.GetProgressLog();
 
             if (list.Count > 0)
+                // FIX: coleção está sendo alterada.
                 foreach (string text in list)
                     this.dataGridViewLog.Rows.Add(text);
         }

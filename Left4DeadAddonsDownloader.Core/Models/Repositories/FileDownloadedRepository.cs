@@ -16,14 +16,14 @@ namespace Left4DeadAddonsDownloader.Core.Models.Repositories
             foreach (var item in files)
             {
                 using (StreamWriter sw = new StreamWriter(filePath))
-                    sw.WriteLine($"{file.Name};{file.Size};{file.UrlOrigin}");
+                    sw.WriteLine($"{file.Name};{file.Size};{file.UrlOrigin};{file.DownloadAgain}");
             }
         }
 
         public void Insert(FileDownloaded file)
         {
             using (StreamWriter sw = new StreamWriter(filePath, true))
-                sw.WriteLine($"{file.Name};{file.Size};{file.UrlOrigin}");
+                sw.WriteLine($"{file.Name};{file.Size};{file.UrlOrigin};{file.DownloadAgain}");
         }
 
         public List<FileDownloaded> Select()
@@ -42,7 +42,8 @@ namespace Left4DeadAddonsDownloader.Core.Models.Repositories
                     {
                         Name = item.Split(';')[0],
                         Size = Convert.ToInt32(item.Split(';')[1]),
-                        UrlOrigin = item.Split(';')[2]
+                        UrlOrigin = item.Split(';')[2],
+                        DownloadAgain = Convert.ToBoolean(item.Split(';')[3])
                     });
                 }
             }

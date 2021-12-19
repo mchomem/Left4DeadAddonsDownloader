@@ -57,19 +57,27 @@ namespace Left4DeadAddonsDownloader.UI.Views
                 columnUrl.HeaderText = "Url";
                 columnUrl.ReadOnly = true;
                 this.dataGridViewDownloadedFiles.Columns.Add(columnUrl);
+
+                DataGridViewCheckBoxColumn columnDownloadAgain = new DataGridViewCheckBoxColumn();
+                columnDownloadAgain.Name = "DownloadAgain";
+                columnDownloadAgain.HeaderText = "Download Again";
+                columnDownloadAgain.ReadOnly = false;
+                columnDownloadAgain.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                this.dataGridViewDownloadedFiles.Columns.Add(columnDownloadAgain);
             }
 
             List<FileDownloaded> fileDownloadeds = _fileDownloadedRepository.Select();
 
             this.labelTotalRecords.Text = $"Total records: { fileDownloadeds.Count }";
 
-            foreach (FileDownloaded fileDownloaded in fileDownloadeds)
+            foreach (FileDownloaded item in fileDownloadeds)
             {
                 this.dataGridViewDownloadedFiles.Rows.Add
                     (
-                        fileDownloaded.Name
-                        , fileDownloaded.Size
-                        , fileDownloaded.UrlOrigin
+                        item.Name
+                        , item.Size
+                        , item.UrlOrigin
+                        , item.DownloadAgain
                     );
             }
         }

@@ -45,7 +45,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.groupBoxRecords.Controls.Add(this.dataGridViewDownloadedFiles);
             this.groupBoxRecords.Location = new System.Drawing.Point(12, 12);
             this.groupBoxRecords.Name = "groupBoxRecords";
-            this.groupBoxRecords.Size = new System.Drawing.Size(760, 391);
+            this.groupBoxRecords.Size = new System.Drawing.Size(806, 391);
             this.groupBoxRecords.TabIndex = 1;
             this.groupBoxRecords.TabStop = false;
             this.groupBoxRecords.Text = "Records";
@@ -54,7 +54,7 @@ namespace Left4DeadAddonsDownloader.UI.Views
             // 
             this.labelTotalRecords.Location = new System.Drawing.Point(6, 352);
             this.labelTotalRecords.Name = "labelTotalRecords";
-            this.labelTotalRecords.Size = new System.Drawing.Size(748, 36);
+            this.labelTotalRecords.Size = new System.Drawing.Size(794, 36);
             this.labelTotalRecords.TabIndex = 2;
             this.labelTotalRecords.Text = "Total records: 0";
             this.labelTotalRecords.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -75,18 +75,16 @@ namespace Left4DeadAddonsDownloader.UI.Views
             this.dataGridViewDownloadedFiles.RowHeadersVisible = false;
             this.dataGridViewDownloadedFiles.RowTemplate.Height = 25;
             this.dataGridViewDownloadedFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewDownloadedFiles.Size = new System.Drawing.Size(748, 327);
+            this.dataGridViewDownloadedFiles.Size = new System.Drawing.Size(794, 327);
             this.dataGridViewDownloadedFiles.TabIndex = 1;
             // 
             // DownloadedFilesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 415);
+            this.ClientSize = new System.Drawing.Size(830, 415);
             this.Controls.Add(this.groupBoxRecords);
-            this.MaximizeBox = false;
             this.Name = "DownloadedFilesForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Downloaded Files";
             this.Load += new System.EventHandler(this.DownloadedFilesForm_Load);
             this.groupBoxRecords.ResumeLayout(false);
