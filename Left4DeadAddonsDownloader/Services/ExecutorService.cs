@@ -36,7 +36,7 @@ namespace Left4DeadAddonsDownloader.Services
 
         public void Start()
         {
-            Console.Title = "Left 4 Dead Addons Downloader";
+            Console.Title = "Left 4 Dead Addons Downloader  v 1.1.0";
             ConsoleMessage.Write("Processo iniciado", TypeMessage.INFORMATION);
 
             ReadAppSettings();
@@ -262,14 +262,19 @@ namespace Left4DeadAddonsDownloader.Services
             DirectoryInfo di = new DirectoryInfo(left4DeadValidAddons);
             // Considera somente os arquivos que não sejam da extensão VPK (Valve Pak).
             FileInfo[] files = di.GetFiles().Where(p => !p.Extension.Equals(".vpk")).ToArray();
-
+            List<string> ignoreExtensions = appSettings.IgnoreAaddonsExtensionsOnDeleting.Split(";").ToList();
+            
             foreach (FileInfo file in files)
             {
                 try
                 {
-                    file.Attributes = FileAttributes.Normal;
-                    File.Delete(file.FullName);
-                    ConsoleMessage.Write($"Arquivo { file.Name } excluído", TypeMessage.SUCCESS);
+                    file.Attributes = FileAttributes.Normal;         
+
+                    if (!ignoreExtensions.Contains(file.Extension.Substring(1)))
+                    {
+                        File.Delete(file.FullName);
+                        ConsoleMessage.Write($"Arquivo { file.Name } excluído", TypeMessage.SUCCESS);
+                    }                    
                 }
                 catch (Exception e)
                 {
@@ -292,6 +297,7 @@ namespace Left4DeadAddonsDownloader.Services
                 appSettings.Left4DeadAddonsFolder = config["AppConfiguration:Left4DeadAddonsFolder"];
                 appSettings.Method = config["AppConfiguration:Method"];
                 appSettings.FileList = config["AppConfiguration:FileList"];
+                appSettings.IgnoreAaddonsExtensionsOnDeleting = config["AppConfiguration:IgnoreAaddonsExtensionsOnDeleting"];
                 appSettings.LogPath = config["AppConfiguration:LogPath"];
 
                 credentials = new Credentials();
