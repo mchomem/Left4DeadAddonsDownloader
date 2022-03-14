@@ -8,5 +8,6 @@
         public string Method { get; set; }
         public string FileList { get; set; }
         public string LogPath { get; set; }
+        public string IgnoreAaddonsExtensionsOnDeleting { get; set; }
     }
 }
