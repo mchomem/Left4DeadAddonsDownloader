@@ -18,6 +18,5 @@ namespace Left4DeadAddonsDownloader.Models.Interfaces
         void CreateTempFolder();
         void DeleteTempFolder();
         void HoldenOnlyVPKFiles();
-        void ReadAppSettings();
     }
 }

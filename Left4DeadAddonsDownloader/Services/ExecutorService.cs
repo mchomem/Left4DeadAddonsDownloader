@@ -1,7 +1,6 @@
 ﻿using Left4DeadAddonsDownloader.Models.Entities;
 using Left4DeadAddonsDownloader.Models.Interfaces;
 using Left4DeadAddonsDownloader.Utils;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,8 +18,6 @@ namespace Left4DeadAddonsDownloader.Services
     {
         #region Fields
 
-        private AppConfiguration appSettings;
-        private Credentials credentials;
         private string left4DeadValidAddons;
         private string localAppFolder;
         private string pathToDownload;
@@ -39,7 +36,6 @@ namespace Left4DeadAddonsDownloader.Services
             Console.Title = "Left 4 Dead Addons Downloader  v 1.1.0";
             ConsoleMessage.Write("Processo iniciado", TypeMessage.INFORMATION);
 
-            ReadAppSettings();
             InicializeProperties();
             CheckLeft4DeadAddonsFolder();
             DownloadVpkFiles(GetUrlListsToDownload());
@@ -55,13 +51,13 @@ namespace Left4DeadAddonsDownloader.Services
 
         public void OpenAddonsFolder()
         {
-            Process.Start("explorer.exe", appSettings.Left4DeadAddonsFolder);
+            Process.Start("explorer.exe", AppSettings.AppConfiguration.Left4DeadAddonsFolder);
         }
 
         public void InicializeProperties()
         {
             localAppFolder = AppDomain.CurrentDomain.BaseDirectory;
-            pathToDownload = $"{localAppFolder}{appSettings.TemporaryDownloadFolder}";
+            pathToDownload = $"{localAppFolder}{AppSettings.AppConfiguration.TemporaryDownloadFolder}";
             string osVersion = DetectOperationSystem();
             userAgent = "User-Agent: Mozilla/5.0 (compatible; Left4DeadAddonsDownloader/1.0.0-alpha; +https://github.com/mchomem/Left4DeadAddonsDownloader)";
 
@@ -90,7 +86,7 @@ namespace Left4DeadAddonsDownloader.Services
         {
             ConsoleMessage.Write("Verificando diretório addons do Left 4 Dead. Aguarde", TypeMessage.INFORMATION);
 
-            left4DeadValidAddons = appSettings.Left4DeadAddonsFolder;
+            left4DeadValidAddons = AppSettings.AppConfiguration.Left4DeadAddonsFolder;
 
             if (!Directory.Exists(left4DeadValidAddons))
             {
@@ -107,18 +103,18 @@ namespace Left4DeadAddonsDownloader.Services
             {
                 string content = string.Empty;
 
-                if (appSettings.Method.Equals("web"))
+                if (AppSettings.AppConfiguration.Method.Equals("web"))
                 {
                     using (WebClient client = new WebClient())
                     {
-                        Stream repoUrlDownloads = client.OpenRead($"{appSettings.DownloadListUrl}/{appSettings.FileList}");
+                        Stream repoUrlDownloads = client.OpenRead($"{AppSettings.AppConfiguration.DownloadListUrl}/{AppSettings.AppConfiguration.FileList}");
                         StreamReader reader = new StreamReader(repoUrlDownloads);
                         content = reader.ReadToEnd();
                     }
                 }
                 else
                 {
-                    using (StreamReader sw = new StreamReader($"{localAppFolder}{appSettings.FileList}"))
+                    using (StreamReader sw = new StreamReader($"{localAppFolder}{AppSettings.AppConfiguration.FileList}"))
                         content = sw.ReadToEnd();
                 }
 
@@ -184,8 +180,8 @@ namespace Left4DeadAddonsDownloader.Services
                         string idMap = string.Empty;
                         client.Headers.Add(userAgent);
 
-                        if (credentials.Enabled)
-                            client.Credentials = new NetworkCredential(credentials.User, credentials.Password);
+                        if (AppSettings.Credential.Enabled)
+                            client.Credentials = new NetworkCredential(AppSettings.Credential.User, AppSettings.Credential.Password);
 
                         if (string.IsNullOrEmpty(file.Name))
                         {
@@ -262,7 +258,7 @@ namespace Left4DeadAddonsDownloader.Services
             DirectoryInfo di = new DirectoryInfo(left4DeadValidAddons);
             // Considera somente os arquivos que não sejam da extensão VPK (Valve Pak).
             FileInfo[] files = di.GetFiles().Where(p => !p.Extension.Equals(".vpk")).ToArray();
-            List<string> ignoreExtensions = appSettings.IgnoreAaddonsExtensionsOnDeleting.Split(";").ToList();
+            List<string> ignoreExtensions = AppSettings.AppConfiguration.IgnoreAaddonsExtensionsOnDeleting.Split(";").ToList();
             
             foreach (FileInfo file in files)
             {
@@ -280,36 +276,6 @@ namespace Left4DeadAddonsDownloader.Services
                 {
                     ConsoleMessage.Write($"Falha: { e.Message }", TypeMessage.ERROR);
                 }
-            }
-        }
-
-        public void ReadAppSettings()
-        {
-            try
-            {
-                IConfigurationBuilder builder = new ConfigurationBuilder()
-                    .AddJsonFile($"appsettings.json", true, true);
-                IConfigurationRoot config = builder.Build();
-
-                appSettings = new AppConfiguration();
-                appSettings.TemporaryDownloadFolder = config["AppConfiguration:TemporaryDownloadFolder"];
-                appSettings.DownloadListUrl = config["AppConfiguration:DownloadListUrl"];
-                appSettings.Left4DeadAddonsFolder = config["AppConfiguration:Left4DeadAddonsFolder"];
-                appSettings.Method = config["AppConfiguration:Method"];
-                appSettings.FileList = config["AppConfiguration:FileList"];
-                appSettings.IgnoreAaddonsExtensionsOnDeleting = config["AppConfiguration:IgnoreAaddonsExtensionsOnDeleting"];
-                appSettings.LogPath = config["AppConfiguration:LogPath"];
-
-                credentials = new Credentials();
-                credentials.Enabled = Convert.ToBoolean(config["Credentials:Enabled"]);
-                credentials.User = config["Credentials:User"];
-                credentials.Password = config["Credentials:Password"];
-
-                ConsoleMessage.Write("Configuração carregada", TypeMessage.SUCCESS);
-            }
-            catch (Exception e)
-            {
-                ConsoleMessage.Write($"Falha: { e.Message }", TypeMessage.ERROR);
             }
         }
 
